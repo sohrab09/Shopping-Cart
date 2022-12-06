@@ -1,4 +1,5 @@
 import { Card, Button } from "react-bootstrap";
+import { useShoppingCart } from "../Context/ShoppingCartContext";
 import { formatCurrency } from "../Utilities/FormatCurrency";
 
 type StoreItemProps = {
@@ -9,7 +10,14 @@ type StoreItemProps = {
 };
 
 export function StoreItems({ id, name, price, img }: StoreItemProps) {
-  const quantity = 0;
+  const {
+    getItemQuantity,
+    increaseCartQuantity,
+    decreaseCartQuantity,
+    removeFromCart
+  } = useShoppingCart();
+
+  const quantity = getItemQuantity(id);
 
   return (
     <Card className="h-100">
@@ -25,22 +33,36 @@ export function StoreItems({ id, name, price, img }: StoreItemProps) {
         </Card.Title>
         <div className="mt-auto">
           {quantity === 0 ? (
-            <Button className="w-100">+ Add To Cart</Button>
+            <Button className="w-100" onClick={() => increaseCartQuantity(id)}>
+              + Add To Cart
+            </Button>
           ) : (
             <div
               className="d-flex align-items-center flex-column"
               style={{ gap: ".5rem" }}
             >
               <div className="d-flex align-items-center justify-content-center">
-                <Button variant="outline-secondary" className="rounded-0">
+                <Button
+                  variant="outline-secondary"
+                  className="rounded-0"
+                  onClick={() => decreaseCartQuantity(id)}
+                >
                   -
                 </Button>
                 <span className="px-3 fs-3">{quantity}</span>
-                <Button variant="outline-secondary" className="rounded-0">
+                <Button
+                  variant="outline-secondary"
+                  className="rounded-0"
+                  onClick={() => increaseCartQuantity(id)}
+                >
                   +
                 </Button>
               </div>
-              <Button variant="danger" className="w-100">
+              <Button
+                variant="danger"
+                className="w-100"
+                onClick={() => removeFromCart(id)}
+              >
                 Remove
               </Button>
             </div>
